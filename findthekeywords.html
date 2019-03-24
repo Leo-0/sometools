@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<title>简单关键词高亮</title>
+</head>
+<body>
+	<p> 
+		<!--test text-->
+		<!--The keyword will be highlighted with red color,such as "track", do you see that? But "tracking" can't.-->
+	</p>
+	<textarea id="content" cols="100" rows="10" placeholder="请输入文本"></textarea>
+	<input type="button" name="button" id="btn" value="确定" style="display: block;" />
+	<p id="highlight" style="line-height: 24px;"></p>
+	<script type="text/javascript">
+		var keywords = ["keyword","可爱","你好","track","hello","what are you","I'm yours","don't know"];
+		var  btn = document.getElementById("btn");
+		btn.onclick = function() {
+			var content = document.getElementById("content");
+			var newContent = content.value;
+			newContent = replaceChar(content.value);
+			var isHave = false;
+			var highlight = document.getElementById("highlight");
+			keywords.some(function(item,index) {
+				var pattern;
+				try {
+					pattern = new RegExp("(\\b"+item+"\\b)"+"|(\\b"+item+"(?=\\d+))"+"|((?<=\\d+)"+item+"\\b)"+"|((?<=\\d+)"+item+"(?=\\d+))","gi");//加上英文单词前或后可能有数字的情况
+				} catch(error) {
+					console.log("error:"+error+"（火狐上(?<=)前置断言这个竟然不支持!!!）");
+					pattern = new RegExp("\\b"+item+"\\b","gi");
+				}
+				if(haveKeyword(item,new RegExp("[\u4e00-\u9fa5]"))) {
+					//中文[\u4e00-\u9fa5]
+					//双字节字符(包括汉字)[^\x00-\xff]
+					pattern = new RegExp(item,"g");
+				}
+				if(haveKeyword(newContent,pattern)) {
+					isHave = true;
+					newContent = replaceContents(newContent,pattern,item);
+				}
+				if(index === keywords.length - 1) {
+					if(!isHave) {
+						highlight.innerHTML = "没有查找到";
+					} else {
+						highlight.innerHTML = newContent;
+					}
+					
+				}
+			});
+		};
+		function haveKeyword(text,pattern) {
+			return pattern.test(text);
+		}
+		function replaceChar(text) {
+			return text.replace(/<!/g,'&lt;!');
+		}
+		function replaceContents(text,pattern,keyword) {
+			var newContent = text.replace(pattern,'<span style="color:red;">'+keyword+'</span>');
+			return newContent;
+		}
+	</script>
+</body>
+</html>
