@@ -37,8 +37,7 @@
 		}
 		function matchAndReplace(keywords,content,highlightPlace,isExact) {
 			var isHave = false;
-			var newContent = content;
-			newContent = replaceChar(content);
+			var newContent = replaceChar(content);
 			keywords.some(function(item,index) {
 				item = item.trim() === "" ? "no&notkeywordhere" : item.trim();
 				var pattern = new RegExp("\\b"+item+"\\b","gi");
