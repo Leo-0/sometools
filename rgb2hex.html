@@ -27,16 +27,17 @@
 			var val = src.value;
 			var s1 = document.getElementById('s1');
 			var s2 = document.getElementById('s2');
-			if(source === 'rgb'){ //待改
-				var patt = /rgb\(\d{1,3},\d{1,3},\d{1,3}\)/;
+			if(source === 'rgb'){ 
+				var patt = /rgb\(\d{1,3},\d{1,3},\d{1,3}\)/i;
 				if(patt.test(val)) {
 					var nums = val.match(/\d+/g);
 					// tar.value = '#'+((parseInt(nums[0])<<16)+(parseInt(nums[1])<<8)+parseInt(nums[2])).toString(16);
-					tar.value = '#'+(parseInt(nums[0])<<16|parseInt(nums[1])<<8|parseInt(nums[2])).toString(16);
+					// tar.value = '#'+(parseInt(nums[0])<<16|parseInt(nums[1])<<8|parseInt(nums[2])).toString(16);
+					tar.value = '#'+toHex(nums[0])+toHex(nums[1])+toHex(nums[2]);
 					s2.style.background = val;
 				}
 			} else if (source === 'hex') {
-				var patt = /#[a-z0-9]{6}/;
+				var patt = /#[a-f0-9]{6}/i;
 				if(patt.test(val)) {
 					var hexVal = val.replace(/#/,'0x');
 					var r = (0xff<<16&hexVal)>>16;
@@ -46,6 +47,12 @@
 					s1.style.background = val;
 				}
 			}
+		}
+		function toHex(num) {
+			var hexs = '0123456789ABCDEF';
+			var quotient = parseInt(num / 16);
+			var remainder = num % 16;
+			return hexs[quotient]+hexs[remainder];
 		}
 	</script>
 </body>
